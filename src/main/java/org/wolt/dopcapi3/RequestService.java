@@ -33,6 +33,7 @@ public class RequestService {
         fetchDynamic(venue_slug);
         
         Delivery delivery = deliveryService.calculateDelivery(staticJson, dynamicJson,  user_lat, user_lon);
+        if (delivery == null) return null;
         return orderService.calculateOrder(dynamicJson, delivery, cart_value);
     }
     

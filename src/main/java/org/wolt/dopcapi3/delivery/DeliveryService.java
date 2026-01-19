@@ -21,6 +21,8 @@ public class DeliveryService {
         int distance = calculateDistance(user_lat, user_lon, lat, lon);
         
         int deliveryConstant = calculateDeliveryConstant(distance, distance_ranges);
+        if (deliveryConstant == -1) return null;
+
         int basePrice = calculateDeliveryBasePrice(dynamic);
         int deliveryMultiplier = calculateDeliveryMultiplier(distance, distance_ranges);
 

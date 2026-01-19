@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.wolt.dopcapi3.order.Order;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,7 +20,7 @@ public class RequestController {
     }
     
     @GetMapping("/delivery-order-price")
-    public String deliveryOrderPrice(
+    public Order deliveryOrderPrice(
             @RequestParam String venue_slug,
             @RequestParam int cart_value,
             @RequestParam double user_lat,

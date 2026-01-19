@@ -12,10 +12,8 @@ import java.util.ArrayList;
 
 @Service
 public class DeliveryService {
-    
-    private int distance;
-    
-    public void calculateDelivery(JSONObject coordinates, JSONObject dynamic, double user_lat, double user_lon){
+
+    public Delivery calculateDelivery(JSONObject coordinates, JSONObject dynamic, double user_lat, double user_lon){
     
         double lon = extractLocation(coordinates).getDouble(0);
         double lat = extractLocation(coordinates).getDouble(1);
@@ -25,16 +23,10 @@ public class DeliveryService {
         int deliveryConstant = calculateDeliveryConstant(distance, distance_ranges);
         int basePrice = calculateDeliveryBasePrice(dynamic);
         int deliveryMultiplier = calculateDeliveryMultiplier(distance, distance_ranges);
+
+        int totalFee = basePrice + deliveryConstant + (Math.round((float) (deliveryMultiplier * distance) / 10));
         
-        IO.println("Delivery Fee: " + deliveryConstant);
-        IO.println("Base Price: " + basePrice);
-        IO.println("Delivery Multiplier: " + deliveryMultiplier);
-        
-        
-        // IO.println("Lat: " + lat);
-        // IO.println("Lon: " + lon);
-        // IO.println("Distance ranges: " + distance_ranges);
-        // IO.println("Distance: " + distance);
+        return new Delivery(totalFee, distance);
     }
     
     private static int calculateDeliveryConstant(int distance, ArrayList<JSONObject> distance_ranges){
@@ -68,9 +60,7 @@ public class DeliveryService {
         GlobalCoordinates source = new GlobalCoordinates(fromLat, fromLon);
         GlobalCoordinates destination = new GlobalCoordinates(toLat, toLon);
         GeodeticCurve geoCurve = new GeodeticCalculator().calculateGeodeticCurve(Ellipsoid.Sphere, source, destination);
-        int dist =  Math.toIntExact(Math.round(geoCurve.getEllipsoidalDistance()));
-        this.distance = dist;
-        return dist;
+        return Math.toIntExact(Math.round(geoCurve.getEllipsoidalDistance()));
     }
     
     private static JSONArray extractLocation(JSONObject coordinates){

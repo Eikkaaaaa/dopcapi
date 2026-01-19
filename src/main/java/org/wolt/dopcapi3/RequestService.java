@@ -2,7 +2,9 @@ package org.wolt.dopcapi3;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.wolt.dopcapi3.delivery.Delivery;
 import org.wolt.dopcapi3.delivery.DeliveryService;
+import org.wolt.dopcapi3.order.Order;
 import org.wolt.dopcapi3.order.OrderService;
 
 import java.io.BufferedReader;
@@ -25,17 +27,13 @@ public class RequestService {
         this.orderService = orderService;
     }
     
-    public String orderPrice(String venue_slug, int cart_value, double user_lat, double user_lon) throws URISyntaxException, IOException {
+    public Order orderPrice(String venue_slug, int cart_value, double user_lat, double user_lon) throws URISyntaxException, IOException {
         
         fetchStatic(venue_slug);
         fetchDynamic(venue_slug);
         
-        deliveryService.calculateDelivery(staticJson, dynamicJson,  user_lat, user_lon);
-        
-        return "venue_slug: " + venue_slug +
-                "\ncart_value: " + cart_value +
-                "\nuser_lat: " + user_lat +
-                "\nuser_lon: " + user_lon;
+        Delivery delivery = deliveryService.calculateDelivery(staticJson, dynamicJson,  user_lat, user_lon);
+        return orderService.calculateOrder(dynamicJson, delivery, cart_value);
     }
     
     private void fetchStatic(String venue_slug) throws URISyntaxException, IOException {

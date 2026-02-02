@@ -29,7 +29,27 @@ Spring boot also provides a clean and efficient way to design REST APIs and divi
 
 After each request to the supplied `/static` and `/dynamic` REST API endpoints, the results are cached for 60 seconds in a Redis cache. This is to limit unnecessary repetitive requests to the same addresses because the resulting data is not changing that often.
 
-## How to use
+## How to access API
+
+The API is hosted in Oracle cloud instance, and can be accessed via https://wolt-dopc-api.duckdns.org/api/v1/delivery-order-price. The API takes 4 parameters:
+
+- venue_slug
+- cart_value
+- user_lat
+- user_lon
+
+These are all listed in the Wolt coding challenge repository and these can be tested with different parameters. Example request is: 
+
+https://wolt-dopc-api.duckdns.org/api/v1/delivery-order-price?venue_slug=home-assignment-venue-helsinki&cart_value=1000&user_lat=60.17094&user_lon=24.93087
+
+Where:
+
+- venue_slug=home-assignment-venue-helsinki
+- cart_value=1000
+- user_lat=60.17094
+- user_lon=24.93087
+
+## How to use yourself
 
 1. Clone the repository
 

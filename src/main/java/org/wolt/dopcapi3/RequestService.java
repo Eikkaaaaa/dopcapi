@@ -6,6 +6,7 @@ import org.wolt.dopcapi3.delivery.Delivery;
 import org.wolt.dopcapi3.delivery.DeliveryService;
 import org.wolt.dopcapi3.order.Order;
 import org.wolt.dopcapi3.order.OrderService;
+import org.wolt.dopcapi3.util.CacheService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,29 +22,54 @@ public class RequestService {
     private JSONObject dynamicJson;
     private final DeliveryService deliveryService;
     private final OrderService orderService;
+    private final CacheService cacheService;
     
-    public RequestService(DeliveryService deliveryService, OrderService orderService) {
+    public RequestService(DeliveryService deliveryService, OrderService orderService, CacheService cacheService) {
         this.deliveryService = deliveryService;
         this.orderService = orderService;
+        this.cacheService = cacheService;
     }
     
     public Order orderPrice(String venue_slug, int cart_value, double user_lat, double user_lon) throws URISyntaxException, IOException {
         
         fetchStatic(venue_slug);
         fetchDynamic(venue_slug);
-        
+
         Delivery delivery = deliveryService.calculateDelivery(staticJson, dynamicJson,  user_lat, user_lon);
         if (delivery == null) return null;
         return orderService.calculateOrder(dynamicJson, delivery, cart_value);
     }
     
     private void fetchStatic(String venue_slug) throws URISyntaxException, IOException {
+
+        JSONObject cachedResult = cacheService.getCacheData(venue_slug + ":static");
+
+        if (cachedResult != null) {
+            staticJson = cachedResult;
+            return;
+        }
+
         String address = "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/" + venue_slug + "/static";
-        this.staticJson = new JSONObject(connect(address));
+
+        JSONObject result = new JSONObject(connect(address));
+        cacheService.cacheResult(venue_slug + ":static", result);
+        this.staticJson = result;
     }
     
     private void fetchDynamic(String venue_slug) throws URISyntaxException, IOException {
+
+        JSONObject cachedResult = cacheService.getCacheData(venue_slug + ":dynamic");
+
+        if (cachedResult != null) {
+            dynamicJson = cachedResult;
+            return;
+        }
+
         String address = "https://consumer-api.development.dev.woltapi.com/home-assignment-api/v1/venues/" + venue_slug + "/dynamic";
+
+        JSONObject result = new JSONObject(connect(address));
+        cacheService.cacheResult(venue_slug + ":dynamic", result);
+
         this.dynamicJson = new JSONObject(connect(address));
     }
     

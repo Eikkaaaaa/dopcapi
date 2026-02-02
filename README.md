@@ -23,9 +23,26 @@ The service exposes a single HTTP endpoint that:
 
 ## Why Java Spring Boot for this task
 
-I chose Java to use for this task for the sole reason that I am the most fluent with Java and enjoy coding with it the most.
+I chose Java to use for this task for the sole reason that I am the most fluent with Java and enjoy coding with it the most. 
 
 Spring boot also provides a clean and efficient way to design REST APIs and divide the functionalities to their respective classes, thus keeping code clean and readable.
+
+After each request to the supplied `/static` and `/dynamic` REST API endpoints, the results are cached for 60 seconds in a Redis cache. This is to limit unnecessary repetitive requests to the same addresses because the resulting data is not changing that often.
+
+## How to use
+
+1. Clone the repository
+
+   ```
+   git clone https://github.com/Eikkaaaaa/dopcapi
+   cd dopcapi
+   ```
+
+2. Start the service
+
+   ```
+   docker-compose up --build
+   ```
 
 ## Disclaimer
 

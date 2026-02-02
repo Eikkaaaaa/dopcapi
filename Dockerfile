@@ -1,8 +1,16 @@
-FROM openjdk:25-rc-jdk
-
+FROM openjdk:25-rc-jdk AS build
 WORKDIR /app
 
-COPY target/dopcapi3-0.0.1-SNAPSHOT.jar app.jar
+COPY . .
+
+RUN chmod +x mvnw
+
+RUN ./mvnw clean package -DskipTests
+
+FROM openjdk:25-rc-jdk
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 

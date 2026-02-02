@@ -41,7 +41,7 @@ After each request to the supplied `/static` and `/dynamic` REST API endpoints, 
 2. Start the service
 
    ```
-   docker-compose up --build
+   docker compose up --build
    ```
 
 ## Disclaimer
